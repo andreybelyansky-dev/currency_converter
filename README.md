@@ -185,3 +185,7 @@ pip install .
 pip install -r requirements-dev.txt
 pytest
 ```
+
+## Лицензия
+
+Проект распространяется по лицензии [MIT](LICENSE).

@@ -1,5 +1,6 @@
 [build-system]
-requires = ["setuptools>=68"]
+# setuptools>=77 нужен для SPDX-выражения license = "MIT" (PEP 639)
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -7,6 +8,8 @@ name = "cbr-currency-converter"
 description = "Конвертация валют по официальным курсам ЦБ РФ (XML_daily.asp)"
 readme = "README.md"
 requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
 # версия берётся из converter/__init__.py
 dynamic = ["version"]
 dependencies = [
