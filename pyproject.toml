@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cbr-currency-converter"
+description = "Конвертация валют по официальным курсам ЦБ РФ (XML_daily.asp)"
+readme = "README.md"
+requires-python = ">=3.10"
+# версия берётся из converter/__init__.py
+dynamic = ["version"]
+dependencies = [
+    "requests>=2.31",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+# Команда CLI (после установки доступна как currency-converter)
+[project.scripts]
+currency-converter = "main:main"
+
+[tool.setuptools]
+packages = ["converter"]
+py-modules = ["main"]
+
+[tool.setuptools.dynamic]
+version = { attr = "converter.__version__" }

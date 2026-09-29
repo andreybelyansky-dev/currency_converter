@@ -4,8 +4,14 @@
 venv
 __pycache__
 *.pyc
+*.egg-info
+build
+dist
 tests
 .pytest_cache
+examples
+docs
 README.md
 .dockerignore
 Dockerfile
+pyproject.toml

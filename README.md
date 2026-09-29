@@ -34,6 +34,15 @@ python main.py --list
 python main.py        # диалоговый режим
 ```
 
+Либо установить как пакет — тогда доступна команда `currency-converter`
+и библиотечный импорт из любого проекта:
+
+```bash
+pip install .
+currency-converter USD RUB 100
+currency-converter        # диалоговый режим
+```
+
 ## Запуск в Docker
 
 ```bash
@@ -134,10 +143,19 @@ result = convert(sheet, Decimal("100"), "USD", "EUR")
 - при сбое сети `get_rates()` возвращает последний кэшированный курс
   (см. раздел «Кэш курсов»).
 
-Если скрипт лежит вне каталога проекта, добавьте каталог проекта в `sys.path`
-(как сделано в примере). Прямая установка пакета через
-`pip install git+https://github.com/andreybelyansky-dev/currency_converter.git`
-потребует добавления `pyproject.toml` — на текущий момент он в проект не входит.
+Если скрипт лежит вне каталога проекта, установите проект как пакет — и
+`from converter...` будет работать из любого кода без настройки путей:
+
+```bash
+pip install git+https://github.com/andreybelyansky-dev/currency_converter.git
+
+# либо после git clone из каталога проекта:
+pip install .
+```
+
+Вместе с пакетом устанавливается консольная команда `currency-converter`
+(то же, что `python main.py`). Версия пакета берётся из
+`converter/__init__.py`.
 
 ## Структура проекта
 
@@ -155,6 +173,7 @@ result = convert(sheet, Decimal("100"), "USD", "EUR")
 │   ├── test_rates.py
 │   ├── test_cache.py
 │   └── test_interactive.py
+├── pyproject.toml        # метаданные пакета, команда currency-converter
 ├── requirements.txt
 ├── Dockerfile
 └── .dockerignore
