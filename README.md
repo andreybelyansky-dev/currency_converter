@@ -98,6 +98,47 @@ docker run --rm -v currency-cache:/root/.cache/currency_converter currency-conve
 - Неизвестный код валюты → сообщение со списком доступных кодов.
 - Неверный формат суммы, даты или кода валюты → сообщение с подсказкой.
 
+## Использование как библиотеки
+
+Пакет `converter` можно импортировать из своего Python-кода — CLI построен
+поверх него как тонкая обёртка. Полный пример:
+[examples/major_rates.py](examples/major_rates.py).
+
+```python
+from datetime import date
+from decimal import Decimal
+
+from converter.cache import get_rates
+from converter.rates import get_rate
+
+sheet = get_rates(None)                    # последние курсы (с кэшем на день)
+sheet = get_rates(date(2025, 1, 15))       # архивные курсы
+sheet = get_rates(None, use_cache=False)   # игнорировать кэш
+
+print(sheet.date)                          # дата данных ЦБ РФ
+print(sheet.rates["USD"].name)             # «Доллар США»
+
+# Для денежных расчётов — Decimal (get_rate возвращает рублей за 1 единицу):
+usd_rub = get_rate(sheet, "USD")
+print(Decimal("100") * usd_rub)            # 100 USD в рублях
+
+# Конвертация любой пары, включая перекрёстные курсы:
+from converter.rates import convert
+result = convert(sheet, Decimal("100"), "USD", "EUR")
+```
+
+При работе с библиотекой кэш и обработка сбоев ЦБ РФ работают так же, как
+в CLI:
+- `ApiError` — сетевые ошибки, недоступность ЦБ РФ, некорректный XML;
+- `CurrencyNotFoundError` — кода нет в справочнике ЦБ РФ;
+- при сбое сети `get_rates()` возвращает последний кэшированный курс
+  (см. раздел «Кэш курсов»).
+
+Если скрипт лежит вне каталога проекта, добавьте каталог проекта в `sys.path`
+(как сделано в примере). Прямая установка пакета через
+`pip install git+https://github.com/andreybelyansky-dev/currency_converter.git`
+потребует добавления `pyproject.toml` — на текущий момент он в проект не входит.
+
 ## Структура проекта
 
 ```
@@ -108,6 +149,8 @@ docker run --rm -v currency-cache:/root/.cache/currency_converter currency-conve
 │   ├── rates.py          # конвертация через рубль, валидация, форматирование
 │   ├── interactive.py    # диалоговый режим
 │   └── output.py         # цветной вывод (rich)
+├── examples/
+│   └── major_rates.py    # пример библиотечного использования
 ├── tests/                # тесты без обращений к сети
 │   ├── test_rates.py
 │   ├── test_cache.py
